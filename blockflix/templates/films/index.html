@@ -1,0 +1,69 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<table id="example" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>Popularity</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Release Date</th>
+        <th>Length</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>Popularity</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Release Date</th>
+        <th>Length</th>
+      </tr>
+    </tfoot>
+</table>
+<script>
+
+
+$(function(){
+  var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken)
+          }
+      }
+  })
+
+	$("#example").DataTable({
+
+      "ajax": {
+         "url": "/films/",
+         "type": "POST"
+      },
+      "order": [[ 0, "desc" ]],
+      "columns": [
+        { "data": "popularity" },
+        { "data": "title" },
+        { "data": "description" },
+        { "data": "release_date" },
+        { "data": "length" }
+      ]
+    });
+
+    // $.ajax({
+    //   url: "/films/",
+    //   type: 'POST',
+    //   contentType: "application/json",
+    //   success: function(response) {
+    //     console.log(response)
+    //   },
+    //   error: function(error) {
+    //      console.log(error);
+    //   }
+    // });
+});
+</script>
+{% endblock %}

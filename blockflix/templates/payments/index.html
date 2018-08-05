@@ -1,0 +1,61 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<table id="example" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+      </tr>
+    </tfoot>
+</table>
+<script>
+
+
+$(function(){
+  var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken)
+          }
+      }
+  })
+
+	$("#example").DataTable({
+
+      "ajax": {
+         "url": "/payments/",
+         "type": "POST"
+      },
+      "order": [[ 0, "desc" ]],
+      "columns": [
+        { "data": "payment_date" },
+        { "data": "amount" }
+      ]
+    });
+
+    $.ajax({
+      url: "/payments/",
+      type: 'POST',
+      contentType: "application/json",
+      success: function(response) {
+        console.log(response)
+      },
+      error: function(error) {
+         console.log(error);
+      }
+    });
+
+});
+</script>
+{% endblock %}

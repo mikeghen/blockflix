@@ -1,0 +1,59 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<table id="actors" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+      </tr>
+    </tfoot>
+</table>
+<script>
+
+
+$(function(){
+  var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken)
+          }
+      }
+  })
+
+	$("#actors").DataTable({
+      "ajax": {
+         "url": "/actors/",
+         "type": "POST"
+      },
+      "columns": [
+         { "data": "first_name" },
+         { "data": "last_name" }
+      ]
+    });
+
+    $.ajax({
+      url: "/actors/",
+      type: 'POST',
+      contentType: "application/json",
+      success: function(response) {
+        console.log(response)
+      },
+      error: function(error) {
+         console.log(error);
+      }
+    });
+});
+</script>
+{% endblock %}
