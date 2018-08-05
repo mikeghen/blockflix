@@ -60,5 +60,5 @@ env/
 blockflix/simulation/data/*
 !blockflix/simulation/data/.gitkeep
 *__pycache__*
-
+.pytest_cache/*
 *.DS_STORE*
