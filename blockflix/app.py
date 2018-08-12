@@ -3,7 +3,6 @@
 from flask import Flask, render_template
 
 from blockflix import commands, public, store
-from blockflix.simulation import seed
 from blockflix.extensions import bcrypt, cache, csrf_protect, db, debug_toolbar, login_manager, migrate, webpack
 from blockflix.settings import ProdConfig
 
