@@ -6,6 +6,7 @@ This project is designed to be used in a [Full Stack Data Engineering](http://go
 ## OS Dependencies
 * MySQL
 * Python 3
+* Nodejs
 
 ## Development Setup
 ### Application Installation
