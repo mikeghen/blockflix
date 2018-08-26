@@ -37,10 +37,12 @@ class DevConfig(Config):
 
     ENV = 'dev'
     DEBUG = True
-    DB_NAME = 'dev.db'
-    # Put the db file in project root
-    DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
-    SQLALCHEMY_DATABASE_URI = 'mysql://root@localhost/blockflix_development'
+    database = os.environ.get('MYSQL_DATABASE','blockflix_development')
+    user = os.environ.get('MYSQL_USER','blockflix')
+    password = os.environ.get('MYSQL_PASSWORD','blockflix')
+    host = os.environ.get('MYSQL_HOST','localhost')
+    SQLALCHEMY_DATABASE_URI = 'mysql://{user}:{password}@{host}/{database}'\
+                              .format(user=user, password=password, host=host, database=database)
     DEBUG_TB_ENABLED = True
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
 

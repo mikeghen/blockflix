@@ -1,49 +1,39 @@
 # BlockFlix
 This is a Flask application that implements an DVD Rental company's online transaction processing (OLTP) application. This application implements a database schema similar to loosely modeled after MySQL's Sakila sample database.
 
-This project is designed to be used in a [Full Stack Data Engineering](http://google.com) course.
+This project is designed to be used in a [Full Stack Data Engineering](http://google.com) course. There is no real front end functionality beyond a few data tables. Use this application for practicing seeding data, deploying applications, and performing ETL operations.
 
-## Learning Objectives
-This project is a _teaching aid_ designed to help teach the following concepts:
-* Implementing one-to-many, many-to-many relationships with Flask-SQLalchemy
-* Seeding applications with synthetic data
-* Implementing callbacks that interface with external systems (e.g. Apache Kafka)
+## OS Dependencies
+* MySQL
+* Python 3
 
-## Application Features
-As a teaching aid, this application implements a minimal number of features:
-* User registration, login
-* DVD inventory management systems
-
-
-## Quickstart
-
-First, set your app's secret key as an environment variable. For example,
-add the following to ``.bashrc`` or ``.bash_profile``.
-
-```
-export BLOCKFLIX_SECRET='something-really-secret'
-```
-Run the following commands to bootstrap your environment ::
+## Development Setup
+### Application Installation
+Download the application codebase, install the Python packages and Node.js packages:
 ```
 git clone https://github.com/mikeghen/blockflix
 cd blockflix
 pip install -r requirements/dev.txt
 npm install
 ```
-Next, make a database:
-```
-mysql> CREATE DATABASE blockflix_development;
-```
-Before running shell commands, set the ``FLASK_APP`` and
-``FLASK_DEBUG`` environment variables:
+Set the following Flask environment variables before running the application:
 ```
 export FLASK_APP=autoapp.py
 export FLASK_DEBUG=1
 ```
-Run the following to create database tables and perform the initial migration ::
+### Database Setup
+Start by creating the application's database on your MySQL database server and database user:
+```
+CREATE DATABASE blockflix_development;
+CREATE USER 'blockflix'@'localhost' IDENTIFIED BY 'blockflix';
+GRANT ALL PRIVILEGES ON blockflix_development.* TO 'blockflix'@'localhost';
+```
+Run the following to create database tables for the application:
 ```
 flask db upgrade
 ```
+
+### Start the Application
 Finally, run the development server with:
 ```
 npm start
