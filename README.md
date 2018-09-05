@@ -3,12 +3,30 @@ This is a Flask application that implements an DVD Rental company's online trans
 
 This project is designed to be used in a [Full Stack Data Engineering](http://google.com) course. There is no real front end functionality beyond a few data tables. Use this application for practicing seeding data, deploying applications, and performing ETL operations.
 
-## OS Dependencies
+
+## Running with Docker
+Build the Docker image for Blockflix:
+```
+docker build -t blockflix .
+```
+Run the application and database with Docker Compose:
+```
+docker-compose up
+```
+Access the applicaiton on port 5000:
+```
+http://localhost:5000
+```
+
+## Development Setup
+Follow these instructions to install the application on your computer.
+
+### Install OS Dependencies
+Install these OS dependencies:
 * MySQL
 * Python 3
 * Nodejs
 
-## Development Setup
 ### Application Installation
 Download the application codebase, install the Python packages and Node.js packages:
 ```
@@ -50,6 +68,7 @@ flask run       # start the flask server
 In your production environment, make sure the ``FLASK_DEBUG`` environment
 variable is unset or is set to ``0``, so that ``ProdConfig`` is used.
 
+:information_source: We will use Elastic Beanstalk to deploy the application.
 
 ## Shell
 
