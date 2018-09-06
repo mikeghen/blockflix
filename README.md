@@ -44,7 +44,7 @@ export FLASK_DEBUG=1
 Start by creating the application's database on your MySQL database server and database user:
 ```
 CREATE DATABASE blockflix_development;
-CREATE USER 'blockflix'@'localhost' IDENTIFIED BY 'blockflix';
+CREATE USER 'blockflix'@'127.0.0.1' IDENTIFIED BY 'blockflix';
 GRANT ALL PRIVILEGES ON blockflix_development.* TO 'blockflix'@'localhost';
 ```
 Run the following to create database tables for the application:
