@@ -44,3 +44,4 @@ sklearn
 progressbar2
 faker
 scipy
+tqdm
