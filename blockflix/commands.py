@@ -9,6 +9,8 @@ from flask import current_app
 from flask.cli import with_appcontext
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 from blockflix.store.models import User
+from blockflix.seed import simulate
+
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.join(HERE, os.pardir)
@@ -19,11 +21,7 @@ TEST_PATH = os.path.join(PROJECT_ROOT, 'tests')
 @click.command()
 @with_appcontext
 def seed():
-    """Run the seed."""
-    user = User(first_name="Mike", last_name="Ghen", username="mike", email="mike@mikeghen.co")
-    user.save()
-
-    # TODO: Users, films, actors, payments, rentals all seeded 2 years
+    simulate()
 
 @click.command()
 def test():
