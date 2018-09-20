@@ -23,19 +23,19 @@ def simulate():
     Runs the seeding for Blockflix
     """
     clear_db()
-    create_films()
+    # create_films()
     create_users_payments()
     create_rentals()
 
 
 def clear_db():
     print("Resetting database...")
-    FilmActor.query.delete()
-    FilmCategory.query.delete()
-    Category.query.delete()
-    Actor.query.delete()
+    # FilmActor.query.delete()
+    # FilmCategory.query.delete()
+    # Category.query.delete()
+    # Actor.query.delete()
     Rental.query.delete()
-    Film.query.delete()
+    #   awFilm.query.delete()
     Payment.query.delete()
     Address.query.delete()
     User.query.delete()
