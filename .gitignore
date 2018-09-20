@@ -64,4 +64,7 @@ blockflix/simulation/data/*
 *.DS_STORE*
 data/*
 !data/.gitkeep
+<<<<<<< HEAD
 *.terraform
+=======
+>>>>>>> master
