@@ -2,14 +2,18 @@
 
 ## Setup Terraform
 0. Install Terraform
-1. Create a `terraform` IAM user with Administator Access permissions
-2. Export the AWS access key and secret as environment variables:
+1. Create a `terraform` IAM user with Administrator Access permissions
+2. Add this key and secret to your AWS configuration file on your development machine. Fisrt, edit `~/.aws/config` and add:
 ```
-export AWS_ACCESS_KEY_ID="xxxxxxx"
-export AWS_SECRET_ACCESS_KEY="xxxxxxx"
-export AWS_DEFAULT_REGION="us-west-2"
+[profile blockflix]
 ```
-3. Create a `infrastructure` directory
+Then edit `~/.aws/credentials` and add:
+```
+[blockflix]
+aws_access_key_id = xxxxxx
+aws_secret_access_key = xxxxxx
+```
+3. Now, create a `infrastructure` directory in the root of this project
 4. Initialize Terraform:
 ```
 cd infrastructure

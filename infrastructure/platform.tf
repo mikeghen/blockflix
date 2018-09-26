@@ -1,4 +1,8 @@
-provider "aws" {}
+provider "aws" {
+  region                  = "us-west-2"
+  shared_credentials_file = "~/.aws/credentials"
+  profile                 = "blockflix"
+}
 
 # Create a VPC to launch our instances into
 resource "aws_vpc" "default" {
@@ -74,7 +78,7 @@ resource "aws_security_group" "application_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["108.2.133.64/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # HTTP access from the VPC
@@ -82,21 +86,21 @@ resource "aws_security_group" "application_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["108.2.133.64/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
-    cidr_blocks = ["108.2.133.64/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     from_port   = 2992
     to_port     = 2992
     protocol    = "tcp"
-    cidr_blocks = ["108.2.133.64/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # outbound internet access
@@ -104,7 +108,7 @@ resource "aws_security_group" "application_sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["108.2.133.64/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
@@ -177,7 +181,7 @@ resource "aws_instance" "blockflix" {
     # The connection will use the local SSH agent for authentication.
   }
 
-  instance_type = "t2.large"
+  instance_type = "t2.medium"
 
   # Lookup the correct AMI based on the region
   # we specified
@@ -200,18 +204,28 @@ resource "aws_instance" "blockflix" {
   }
 
   # We run a remote provisioner on the instance after creating it.
-  # In this case, we just install nginx and start it. By default,
-  # this should be on port 80
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "sudo apt-get -y update",
-  #     "sudo apt-get -y install python3-pip nodejs npm libmysqlclient-dev",
-  #     "cd /opt",
-  #     "sudo git clone https://github.com/mikeghen/blockflix",
-  #     "cd blockflix",
-  #     ""
-  #   ]
-  # }
+  # In this case, we just blockflix and start it. This is a basic setup
+  # not production ready.
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get -y update",
+      "sudo apt-get -y install python3-pip nodejs npm libmysqlclient-dev nodejs-legacy",
+      "cd /opt",
+      "sudo git clone https://github.com/mikeghen/blockflix",
+      "cd blockflix",
+      "sudo pip3 install -r requirements/dev.txt",
+      "sudo npm install",
+      "export MYSQL_HOST=${aws_db_instance.blockflix_db.address}",
+      "export MYSQL_DATABASE=${aws_db_instance.blockflix_db.name}",
+      "export FLASK_APP=autoapp.py",
+      "export FLASK_DEBUG=0",
+      "flask db upgrade",
+      "sudo npm run build",
+      "flask run &",
+      "flask seed"
+
+    ]
+  }
 }
 
 resource "aws_db_instance" "blockflix_db" {
@@ -220,12 +234,13 @@ resource "aws_db_instance" "blockflix_db" {
   allocated_storage      = 25
   engine                 = "mysql"
   engine_version         = "5.7"
-  instance_class         = "db.t2.micro"
+  instance_class         = "db.t2.small"
   name                   = "blockflix_development"
   username               = "blockflix"
   password               = "blockflix"
   vpc_security_group_ids = ["${aws_security_group.database_sg.id}"]
   db_subnet_group_name   = "${aws_db_subnet_group.default.id}"
+  final_snapshot_identifier = "blockflix-final"
 }
 
 output "db_instance_address" {
