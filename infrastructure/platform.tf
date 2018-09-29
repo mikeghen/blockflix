@@ -177,6 +177,8 @@ resource "aws_instance" "blockflix" {
   connection {
     # The default username for our AMI
     user = "ubuntu"
+    type = "ssh"
+    private_key = "${file("~/.ssh/id_rsa")}"
 
     # The connection will use the local SSH agent for authentication.
   }
@@ -209,11 +211,11 @@ resource "aws_instance" "blockflix" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
-      "sudo apt-get -y install python3-pip nodejs npm libmysqlclient-dev nodejs-legacy",
+      "sudo apt-get -y install python-pip nodejs npm libmysqlclient-dev nodejs-legacy",
       "cd /opt",
       "sudo git clone https://github.com/mikeghen/blockflix",
       "cd blockflix",
-      "sudo pip3 install -r requirements/dev.txt",
+      "sudo pip install -r requirements/dev.txt",
       "sudo npm install",
       "export MYSQL_HOST=${aws_db_instance.blockflix_db.address}",
       "export MYSQL_DATABASE=${aws_db_instance.blockflix_db.name}",
@@ -222,8 +224,40 @@ resource "aws_instance" "blockflix" {
       "flask db upgrade",
       "sudo npm run build",
       "flask run &",
-      "flask seed"
+      "cd /opt/blockflix/data",
+      "sudo wget https://s3.amazonaws.com/mikeghen/movies_metadata.csv",
+      "sudo wget https://s3.amazonaws.com/mikeghen/credits.csv",
+      "cd /opt/blockflix"
+    ]
+  }
+}
 
+resource "aws_instance" "airflow" {
+  connection {
+    user = "ubuntu"
+    type = "ssh"
+    private_key = "${file("~/.ssh/id_rsa")}"
+
+  }
+  instance_type = "t2.medium"
+  ami = "ami-51537029"
+  key_name = "${aws_key_pair.auth.id}"
+  vpc_security_group_ids = ["${aws_security_group.application_sg.id}"]
+  subnet_id = "${aws_subnet.default.id}"
+
+  tags {
+    Name = "airflow"
+    Project = "data-platform"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get -y update",
+      "sudo apt-get -y install python-pip libmysqlclient-dev",
+      "sudo SLUGIFY_USES_TEXT_UNIDECODE=yes pip install apache-airflow[mysql,s3,hive]",
+      "airflow initdb",
+      "airflow scheduler &",
+      "airflow webserver &"
     ]
   }
 }

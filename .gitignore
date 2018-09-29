@@ -65,3 +65,4 @@ blockflix/simulation/data/*
 data/*
 !data/.gitkeep
 *.terraform
+*terraform.*
